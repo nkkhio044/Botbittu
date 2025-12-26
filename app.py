@@ -10,22 +10,20 @@ CORS(app)
 genai.configure(api_key=os.environ.get("GOOGLE_API_KEY"))
 
 # --- Initialize Gemini Model ---
-# Use a valid model name (latest supported ones are gemini-1.5-flash-latest or gemini-2.0-flash)
-model = genai.GenerativeModel(model_name="gemini-1.5-flash-latest")
+# Use a valid model name (latest supported ones are gemini-2.0-flash or gemini-2.0-pro)
+model = genai.GenerativeModel(model_name="gemini-2.0-flash")
 
 # --- Passwords for Access Control ---
 PASSWORDS = {
-    "music": "SarFu112",     # Avii Raj ke button ka password
-    "hosting": "SarFu122",   # Nawab ke button ka password
-    "bot": "ArYanxd"         # Chat Bot kholne ka password
+    "music": "SarFu112",
+    "hosting": "SarFu122",
+    "bot": "ArYanxd"
 }
 
-# --- Home Route ---
 @app.route('/')
 def home():
     return "Legend Boys API is Running on Render!"
 
-# --- Password Verification Route ---
 @app.route('/verify', methods=['POST'])
 def verify():
     data = request.json
@@ -36,7 +34,6 @@ def verify():
         return jsonify({"status": "success"})
     return jsonify({"status": "error", "message": "Galat Password!"})
 
-# --- Gemini Chatbot Route ---
 @app.route('/chat', methods=['POST'])
 def chat():
     data = request.json
@@ -54,7 +51,6 @@ def chat():
         print("Gemini Error:", e)
         return jsonify({"reply": f"Bhai error aa gaya: {str(e)}"})
 
-# --- Run App on Render Default Port ---
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Render sets PORT automatically
     app.run(host='0.0.0.0', port=port)

@@ -7,14 +7,16 @@ app = Flask(__name__)
 CORS(app)
 
 # API Configuration
-# Bhai maine teri key wahi rehne di hai
 genai.configure(api_key="AIzaSyAUq4F8mf1FLQyZhV3T6Fp8AGe-DwQ0e_U")
 
-# Fixed: Latest model name (Gemini 1.5 Flash)
-# Ye model fast bhi hai aur free tier mein best chalta hai
-model = genai.GenerativeModel('gemini-1.5-flash')
+# --- AUTO MODEL SELECTION ---
+try:
+    # Sabse pehle latest flash model try karega
+    model = genai.GenerativeModel('gemini-1.5-flash')
+except:
+    # Agar wo na mile toh purana stable model
+    model = genai.GenerativeModel('gemini-pro')
 
-# Secret Passwords
 PASSWORDS = {
     "music": "SarFu112",
     "hosting": "SarFu122",
@@ -23,18 +25,36 @@ PASSWORDS = {
 
 @app.route('/')
 def home():
-    return "Legend Boys API is Running Successfully!"
+    return "Legend Boys API is Live!"
 
 @app.route('/verify', methods=['POST'])
 def verify():
     data = request.json
     p_type = data.get("type")
     p_val = data.get("password")
-    
     if PASSWORDS.get(p_type) == p_val:
         return jsonify({"status": "success"})
     return jsonify({"status": "error", "message": "Galat Password!"})
 
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.json
+    user_msg = data.get("message")
+    bot_pw = data.get("bot_pw")
+
+    if bot_pw != PASSWORDS["bot"]:
+        return jsonify({"reply": "Access Denied: Sahi password dalo!"})
+
+    try:
+        # Latest API call method
+        response = model.generate_content(user_msg)
+        return jsonify({"reply": response.text})
+    except Exception as e:
+        return jsonify({"reply": f"Bhai error: {str(e)}. Tip: AI Studio me naya project banake API key badlo."})
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
 @app.route('/chat', methods=['POST'])
 def chat():
     data = request.json

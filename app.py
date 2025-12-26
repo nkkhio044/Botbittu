@@ -10,7 +10,7 @@ CORS(app)
 HF_API_KEY = os.environ.get("HF_API_KEY")
 # Choose a chat/instruct model (change if you prefer another)
 # Good defaults: Mistral Instruct or LLaMA 3 Instruct (if available to you)
-MODEL_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+MODEL_URL = "https://router.huggingface.co/mistralai/Mistral-7B-Instruct-v0.2"
 
 HEADERS = {"Authorization": f"Bearer {HF_API_KEY}"}
 
